@@ -1,9 +1,11 @@
 # Evades.io-bot
 
 # About
-This bot will be able to play the game, avoid enemies, and clear stages. 
+The goal of this project is to explore computer vision and automation. The bot should be able to maneuver around enemies and move to the next stages. 
 
 # **Known Issues**
 Unable to get screenshots of Microsoft Edge
 
-Not optimized for smaller monitors
+Detection not getting current screenshot from Windowcapture
+
+Bot not working
