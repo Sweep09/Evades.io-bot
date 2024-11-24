@@ -48,7 +48,7 @@ class Vision:
         
         # for performance reasons, returns limited number of results
         if len(rectangles) > max_results:
-            print('Warning: too many results. raise threshold.')
+            print(f'Warning: {len(rectangles)} results found, but only {max_results} will be returned.')
             rectangles = rectangles[:max_results]
         
         return rectangles
@@ -235,7 +235,8 @@ class Detection:
             try:
                 current_time = time()
                 if self.buffer is not None:
-                    screenshot = self.buffer.copy()
+                    with self.lock:
+                        screenshot = self.buffer
                     self.rectangles = self.vision.findPos(screenshot)
 
                 #fps calculation

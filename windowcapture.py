@@ -41,22 +41,6 @@ class WindowCapture:
         self.w = window_rect[2] - window_rect[0]
         self.h = window_rect[3] - window_rect[1]
         print("Calculated window dimensions (w, h):", self.w, self.h)
-
-        # account for extra parts
-        border_pixels = 150
-        extrabar_pixels = 120
-
-        #self.w = self.w - border_pixels
-        #self.w -= 650
-        #self.h = self.h - (extrabar_pixels - border_pixels)
-        
-        self.cropped_x = border_pixels
-        #self.cropped_y = extrabar_pixels - 50
-        self.cropped_y = extrabar_pixels
-
-        # set cropped coords offset
-        self.offset_x = window_rect[0] + self.cropped_x
-        self.offset_y = window_rect[1] + self.cropped_y
  
     def get_screenshot(self):
 
@@ -75,7 +59,9 @@ class WindowCapture:
         
             
                 # copy window's device context to memory device context
-                cDC.BitBlt((0,0),(self.w, self.h) , dcObj, (self.cropped_x,self.cropped_y), win32con.SRCCOPY)
+                cDC.BitBlt((0,0),(self.w, self.h) , dcObj, (self.cropped_x,
+                                                            self.cropped_y), 
+                                                            win32con.SRCCOPY)
         
                 # save file
                 #dataBitMap.SaveBitmapFile(cDC, bmpfilenamename)
@@ -120,28 +106,17 @@ class WindowCapture:
         win32gui.EnumWindows(winEnumHandler, None)
 
     # translate screenshot pixels to screen pixels
-    def get_screen_pos(self, pos):
-        return (pos[0] + self.offset_x, pos[1] + self.offset_y)
-    
-    def has_more_monitors(self):
-        #Checks if a second monitor is available.
-        #Returns True if more than one monitor is detected, False otherwise.
-        monitors = win32api.EnumDisplayMonitors()
-        return len(monitors) > 1
+    #def get_screen_pos(self, pos):
+     #   return (pos[0] + self.offset_x, pos[1] + self.offset_y)
 
-    def move_window(self, x=1920, y=0):
-        # move window to another if available
-        if self.has_more_monitors():
-            print('more than one monitor detected')
+    def move_window(self, window_name, x=1920, y=0):
+        #Checks if a second monitor is available.
+        monitors = win32api.EnumDisplayMonitors()
+        # move window to other if available
+        if len(monitors) > 1:
             # Get window title from hwnd
-            window_name = win32gui.GetWindowText(self.hwnd) 
-            if window_name:
-                cv.moveWindow(window_name, x, y)
-                print(f"Window '{window_name}' moved to position ({x}, {y})")
-            else:
-                ('move_window: window not found')
-        else:
-            pass
+            cv.moveWindow(window_name, x, y)
+            print(f"Window '{window_name}' moved to position ({x}, {y})")
 
     def get_fps(self):
         return self.fps
